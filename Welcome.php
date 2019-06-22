@@ -46,45 +46,44 @@ class Welcome extends CI_Controller {
 			$this->session->set_flashdata('alert', 'Anda Belum Mengisi Username atau Password');
 			$this->load->view('login');
 		}
-
-	function tambah_customer(){
-		$this->load->view('registrasi/header');
-		$this->load->view('registrasi/tambahcustomer');
-		$this->load->view('registrasi/footer');
 	}
 
-	function tambah_customer_act(){
-		$nama = $this->input->post('nama_customer');
-		$username = $this->input->post('username');
-		$password = md5($this->input->post('password'));
-		$repassword = $this->input->post('repassword');
-		$gender = $this->input->post('gender');
-		$notelp = $this->input->post('notelp');
-		$alamat = $this->input->post('alamat');
-		$email = $this->input->post('email');
-		
-		$this->form_validation->set_rules('nama_customer','Nama Customer','required');
+	public function signup(){
+		$this->load->view('signup');
+	}
+
+	public function signup_act(){
+
+      	$username = htmlspecialchars($this->input->post('username'));
+      	$nama_customer = htmlspecialchars($this->input->post('nama_customer'));
+      	$gender = htmlspecialchars($this->input->post('gender'));
+      	$no_telp = htmlspecialchars($this->input->post('no_telp'));
+      	$alamat = htmlspecialchars($this->input->post('alamat'));
+      	$email = htmlspecialchars($this->input->post('email'));
+      	$password = md5($this->input->post('password'));
+      	$this->form_validation->set_rules('nama_customer','Nama Customer','required');
+		$this->form_validation->set_rules('username','Username','required');
+		$this->form_validation->set_rules('no_telp','No.Telp','required');
+		$this->form_validation->set_rules('alamat','Alamat','required');
 		$this->form_validation->set_rules('email','Email','required');
-		if($this->form_validation->run() != false){
+		$this->form_validation->set_rules('password','Password','required');
+		
+		if ($this->form_validation->run() == FALSE){
 			$data = array(
-				'nama_customer' => $nama,
-				'username'	=> $username,
-				'password' => $password,
-				'gender' => $gender,
-				'no_telp' => $notelp,
-				'alamat' => $alamat,
-				'email' => $email
+				'username' => $username,
+				'nama_customer' => $nama_customer,
+            	'gender' => $gender,
+            	'no_telp' => $no_telp,
+            	'alamat' => $alamat,
+            	'email' => $email,
+            	'password' => $password
 			);
-		
-			$this->m_rental->insert_data($data,'customer');
-			redirect(base_url().'welcome/login');
+			
+			$this->db->insert('customer', $data);
+			redirect(base_url(). 'welcome/login');
 		}else{
-			$this->load->view('registrasi/header');
-			$this->load->view('registrasi/tambahcustomer');
-			$this->load->view('registrasi/footer');
-		}
-	}
- 
+			$this->load->view('signup');
 		
+		}		
 	}
 }
